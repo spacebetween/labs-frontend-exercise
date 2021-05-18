@@ -1,23 +1,23 @@
-import Cookies from 'cookies';
-import { useRouter } from 'next/router'
+import Cookies from "cookies";
+import { useRouter } from "next/router";
 import { allPlayersJoined, getGame } from "../../src/gameStore";
 
 export async function getServerSideProps(context) {
   const gameId = context.params.gameId;
-  const cookies = new Cookies(context.req, context.res)
-  const playerId = cookies.get('playerId');
+  const cookies = new Cookies(context.req, context.res);
+  const playerId = cookies.get("playerId");
 
   let gameState;
   try {
     gameState = getGame(gameId);
-  } catch(err) {
+  } catch (err) {
     // game not found
     return {
       redirect: {
         destination: `/`,
         permanent: false,
       },
-    }
+    };
   }
 
   if (!allPlayersJoined(gameState)) {
@@ -26,23 +26,23 @@ export async function getServerSideProps(context) {
         destination: `/games/${gameId}/pending`,
         permanent: false,
       },
-    }
+    };
   }
 
   return {
-    props: { 
-      currentPlayer: gameState.players[playerId]
-    }
-  }
+    props: {
+      currentPlayer: gameState.players[playerId],
+    },
+  };
 }
 
-const Game = ({ currentPlayer: { cards, exchanged }}) => {
-  const router = useRouter()
-  const { gameId } = router.query
+const Game = ({ currentPlayer: { cards, exchanged } }) => {
+  const router = useRouter();
+  const { gameId } = router.query;
 
-  console.log(cards)
+  console.log(cards);
 
-  return <p>Game: {gameId}</p>
-}
+  return <p>Game: {gameId}</p>;
+};
 
-export default Game
+export default Game;
